@@ -4,6 +4,7 @@ import br.com.rr.mastertech.acesso.dto.request.AcessoRequest;
 import br.com.rr.mastertech.acesso.dto.response.AcessoResponse;
 import br.com.rr.mastertech.acesso.service.AcessoService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -22,8 +23,9 @@ public class AcessoController {
     }
 
     @PostMapping
-    public AcessoResponse create(@Valid @RequestBody AcessoRequest request) {
-        return acessoService.create(request.getClienteId(), request.getPortaId());
+    public ResponseEntity<AcessoResponse> create(@Valid @RequestBody AcessoRequest request) {
+        AcessoResponse response = acessoService.create(request.getClienteId(), request.getPortaId());
+        return new ResponseEntity<AcessoResponse>(response, HttpStatus.CREATED);
     }
 
     @DeleteMapping("/{clienteId}/{portaId}")

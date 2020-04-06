@@ -8,7 +8,7 @@ import org.springframework.stereotype.Component;
 public class AcessoMapper {
 
     public AcessoResponse toAcessoResponse(Acesso acesso) {
-        return AcessoResponse.builder().portaId(acesso.getId().getPortaId())
+        return AcessoResponse.builder().clienteId(acesso.getId().getPortaId())
             .pessoaId(acesso.getId().getPessoaId()).build();
     }
 }

@@ -7,10 +7,7 @@ import br.com.rr.mastertech.acesso.client.dto.PortaDTO;
 import br.com.rr.mastertech.acesso.domain.Acesso;
 import br.com.rr.mastertech.acesso.domain.AcessoIdentity;
 import br.com.rr.mastertech.acesso.dto.response.AcessoResponse;
-import br.com.rr.mastertech.acesso.exception.ClienteNaoEncontradaException;
-import br.com.rr.mastertech.acesso.exception.ClienteOfflineException;
-import br.com.rr.mastertech.acesso.exception.PortaNaoEncontradaException;
-import br.com.rr.mastertech.acesso.exception.PortaOfflineException;
+import br.com.rr.mastertech.acesso.exception.*;
 import br.com.rr.mastertech.acesso.mapper.AcessoMapper;
 import br.com.rr.mastertech.acesso.repository.AcessoRepository;
 import com.netflix.hystrix.exception.HystrixRuntimeException;
@@ -37,23 +34,21 @@ public class AcessoService {
     private PortaClient portaClient;
 
     public AcessoResponse find(Integer clienteId, Integer portaId) {
-        ClienteDTO pessoa = this.findCliente(clienteId);
+        ClienteDTO cliente = this.findCliente(clienteId);
         PortaDTO porta = this.findPorta(portaId);
 
-        AcessoIdentity id = new AcessoIdentity(pessoa.getId(), porta.getId());
+        AcessoIdentity id = new AcessoIdentity(cliente.getId(), porta.getId());
         Optional<Acesso> acessoOptional = acessoRepository.findById(id);
 
-        Acesso acesso = acessoOptional.orElse(Acesso.builder().id(id).build());
+        Acesso acesso = acessoOptional.orElseThrow(() -> new AcessoNaoEncontradoException());
         return acessoMapper.toAcessoResponse(acesso);
     }
 
     public AcessoResponse create(Integer clienteId, Integer portaId) {
-        ClienteDTO pessoa = this.findCliente(clienteId);
+        ClienteDTO cliente = this.findCliente(clienteId);
         PortaDTO porta = this.findPorta(portaId);
 
-        //TODO verificar se existe porta e pessoa
-
-        AcessoIdentity id = new AcessoIdentity(pessoa.getId(), porta.getId());
+        AcessoIdentity id = new AcessoIdentity(cliente.getId(), porta.getId());
         Optional<Acesso> acessoOptional = acessoRepository.findById(id);
 
         Acesso acesso = acessoOptional.orElse(Acesso.builder().id(id).build());
@@ -64,10 +59,10 @@ public class AcessoService {
 
     @Transactional
     public void delete(Integer clienteId, Integer portaId) {
-        ClienteDTO pessoa = this.findCliente(clienteId);
+        ClienteDTO cliente = this.findCliente(clienteId);
         PortaDTO porta = this.findPorta(portaId);
 
-        AcessoIdentity id = new AcessoIdentity(pessoa.getId(), porta.getId());
+        AcessoIdentity id = new AcessoIdentity(cliente.getId(), porta.getId());
         acessoRepository.deleteById(id);
     }
 

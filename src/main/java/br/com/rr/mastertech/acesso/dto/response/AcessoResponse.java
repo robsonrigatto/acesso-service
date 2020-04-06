@@ -8,8 +8,8 @@ import lombok.Data;
 @Builder
 public class AcessoResponse {
 
-    @JsonProperty("porta_id")
-    private Integer portaId;
+    @JsonProperty("cliente_id")
+    private Integer clienteId;
 
     @JsonProperty("pessoa_id")
     private Integer pessoaId;
