@@ -37,23 +37,24 @@ public class AcessoService {
         ClienteDTO cliente = this.findCliente(clienteId);
         PortaDTO porta = this.findPorta(portaId);
 
-        AcessoIdentity id = new AcessoIdentity(cliente.getId(), porta.getId());
-        Optional<Acesso> acessoOptional = acessoRepository.findById(id);
+        Acesso acesso = acessoMapper.toAcesso(cliente, porta);
+        Optional<Acesso> acessoOptional = acessoRepository.findById(acesso.getId());
 
-        Acesso acesso = acessoOptional.orElseThrow(() -> new AcessoNaoEncontradoException());
+        acesso = acessoOptional.orElseThrow(() -> new AcessoNaoEncontradoException());
         return acessoMapper.toAcessoResponse(acesso);
     }
 
     public AcessoResponse create(Integer clienteId, Integer portaId) {
         ClienteDTO cliente = this.findCliente(clienteId);
         PortaDTO porta = this.findPorta(portaId);
+        Acesso acesso = acessoMapper.toAcesso(cliente, porta);
 
-        AcessoIdentity id = new AcessoIdentity(cliente.getId(), porta.getId());
-        Optional<Acesso> acessoOptional = acessoRepository.findById(id);
+        Optional<Acesso> acessoOptional = acessoRepository.findById(acesso.getId());
+        if(acessoOptional.isPresent()) {
+            throw new AcessoExistenteException();
+        }
 
-        Acesso acesso = acessoOptional.orElse(Acesso.builder().id(id).build());
         acesso = acessoRepository.save(acesso);
-
         return acessoMapper.toAcessoResponse(acesso);
     }
 
@@ -62,7 +63,9 @@ public class AcessoService {
         ClienteDTO cliente = this.findCliente(clienteId);
         PortaDTO porta = this.findPorta(portaId);
 
-        AcessoIdentity id = new AcessoIdentity(cliente.getId(), porta.getId());
+        AcessoIdentity id = new AcessoIdentity();
+        id.setPessoaId(cliente.getId());
+        id.setPortaId(porta.getId());
         acessoRepository.deleteById(id);
     }
 

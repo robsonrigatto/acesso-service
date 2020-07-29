@@ -11,5 +11,5 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public interface PortaClient {
 
     @GetMapping("/{id}")
-    public PortaDTO findById(@PathVariable Integer id);
+    PortaDTO findById(@PathVariable Integer id);
 }
