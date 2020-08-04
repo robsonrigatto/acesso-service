@@ -7,11 +7,10 @@ import br.com.rr.mastertech.acesso.client.dto.PortaDTO;
 import br.com.rr.mastertech.acesso.domain.Acesso;
 import br.com.rr.mastertech.acesso.domain.AcessoIdentity;
 import br.com.rr.mastertech.acesso.dto.response.AcessoResponse;
-import br.com.rr.mastertech.acesso.exception.*;
+import br.com.rr.mastertech.acesso.exception.AcessoExistenteException;
+import br.com.rr.mastertech.acesso.exception.AcessoNaoEncontradoException;
 import br.com.rr.mastertech.acesso.mapper.AcessoMapper;
 import br.com.rr.mastertech.acesso.repository.AcessoRepository;
-import com.netflix.hystrix.exception.HystrixRuntimeException;
-import feign.FeignException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -70,26 +69,10 @@ public class AcessoService {
     }
 
     private ClienteDTO findCliente(Integer pessoaId) {
-        try {
-            return clienteClient.findById(pessoaId);
-
-        } catch (HystrixRuntimeException ex) {
-            if(ex.getCause() instanceof FeignException.NotFound) {
-                throw new ClienteNaoEncontradaException();
-            }
-            throw new ClienteOfflineException();
-        }
+        return clienteClient.findById(pessoaId);
     }
 
     private PortaDTO findPorta(Integer portaId) {
-        try {
-            return portaClient.findById(portaId);
-
-        } catch (HystrixRuntimeException ex) {
-            if(ex.getCause() instanceof FeignException.NotFound) {
-                throw new PortaNaoEncontradaException();
-            }
-            throw new PortaOfflineException();
-        }
+        return portaClient.findById(portaId);
     }
 }
