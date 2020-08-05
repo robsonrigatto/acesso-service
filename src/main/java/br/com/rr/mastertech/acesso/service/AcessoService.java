@@ -10,6 +10,7 @@ import br.com.rr.mastertech.acesso.dto.response.AcessoResponse;
 import br.com.rr.mastertech.acesso.exception.AcessoExistenteException;
 import br.com.rr.mastertech.acesso.exception.AcessoNaoEncontradoException;
 import br.com.rr.mastertech.acesso.mapper.AcessoMapper;
+import br.com.rr.mastertech.acesso.producer.AcessoProducer;
 import br.com.rr.mastertech.acesso.repository.AcessoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -27,6 +28,9 @@ public class AcessoService {
     private AcessoRepository acessoRepository;
 
     @Autowired
+    private AcessoProducer acessoProducer;
+
+    @Autowired
     private ClienteClient clienteClient;
 
     @Autowired
@@ -38,6 +42,7 @@ public class AcessoService {
 
         Acesso acesso = acessoMapper.toAcesso(cliente, porta);
         Optional<Acesso> acessoOptional = acessoRepository.findById(acesso.getId());
+        acessoProducer.send(acessoMapper.toAcessoClienteDTO(cliente, porta, acessoOptional.isPresent()));
 
         acesso = acessoOptional.orElseThrow(() -> new AcessoNaoEncontradoException());
         return acessoMapper.toAcessoResponse(acesso);

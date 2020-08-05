@@ -5,7 +5,10 @@ import br.com.rr.mastertech.acesso.client.dto.PortaDTO;
 import br.com.rr.mastertech.acesso.domain.Acesso;
 import br.com.rr.mastertech.acesso.domain.AcessoIdentity;
 import br.com.rr.mastertech.acesso.dto.response.AcessoResponse;
+import br.com.rr.mastertech.acesso.producer.dto.AcessoClienteDTO;
 import org.springframework.stereotype.Component;
+
+import java.time.LocalDateTime;
 
 @Component
 public class AcessoMapper {
@@ -26,5 +29,15 @@ public class AcessoMapper {
         acesso.setId(id);
 
         return acesso;
+    }
+
+    public AcessoClienteDTO toAcessoClienteDTO(ClienteDTO cliente, PortaDTO porta, Boolean temAcesso) {
+        AcessoClienteDTO dto = new AcessoClienteDTO();
+        dto.setIdPorta(porta.getId());
+        dto.setIdCliente(cliente.getId());
+        dto.setHorario(LocalDateTime.now());
+        dto.setTemAcesso(temAcesso);
+
+        return dto;
     }
 }

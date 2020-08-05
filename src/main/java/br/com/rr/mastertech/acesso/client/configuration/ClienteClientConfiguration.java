@@ -1,8 +1,8 @@
 package br.com.rr.mastertech.acesso.client.configuration;
 
+import br.com.rr.mastertech.acesso.client.fallback.ClienteClientFallback;
 import br.com.rr.mastertech.acesso.client.decoder.ClienteClientDecoder;
 import br.com.rr.mastertech.acesso.client.factory.FallbackFactoryBuilder;
-import br.com.rr.mastertech.acesso.client.fallback.ClienteClientFallback;
 import feign.Feign;
 import feign.codec.ErrorDecoder;
 import io.github.resilience4j.feign.FeignDecorators;
